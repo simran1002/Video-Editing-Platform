@@ -1,0 +1,453 @@
+openapi: 3.0.0
+info:
+  title: Video Editing Platform API
+  version: 1.0.0
+  description: API documentation for the Video Editing Platform
+  license:
+    name: ISC
+  contact:
+    name: API Support
+    email: support@videoediting.example.com
+
+servers:
+  - url: /api
+    description: API Server
+
+tags:
+  - name: Videos
+    description: Video operations
+
+paths:
+  /videos:
+    post:
+      summary: Upload a new video
+      tags:
+        - Videos
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+                  description: The video file to upload
+                title:
+                  type: string
+                  description: Title for the video
+              required:
+                - video
+                - title
+      responses:
+        '201':
+          description: Video uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /videos/{id}:
+    get:
+      summary: Get a video by ID
+      tags:
+        - Videos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the video
+      responses:
+        '200':
+          description: Video details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+        '404':
+          description: Video not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /videos/{id}/trim:
+    post:
+      summary: Trim a video
+      tags:
+        - Videos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the video
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startTime:
+                  type: number
+                  description: Start time in seconds
+                endTime:
+                  type: number
+                  description: End time in seconds
+              required:
+                - startTime
+                - endTime
+      responses:
+        '202':
+          description: Trim operation started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trim'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Video not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /videos/{id}/subtitles:
+    post:
+      summary: Add subtitles to a video
+      tags:
+        - Videos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the video
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Subtitle text
+                startTime:
+                  type: number
+                  description: Start time in seconds
+                endTime:
+                  type: number
+                  description: End time in seconds
+              required:
+                - text
+                - startTime
+                - endTime
+      responses:
+        '202':
+          description: Subtitle operation started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subtitle'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Video not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /videos/{id}/render:
+    post:
+      summary: Render a video with all edits
+      tags:
+        - Videos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the video
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                edits:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum: [trim, subtitle]
+                      id:
+                        type: string
+                    required:
+                      - type
+                      - id
+              required:
+                - edits
+      responses:
+        '202':
+          description: Render operation started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  jobId:
+                    type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Video not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /videos/{id}/download:
+    get:
+      summary: Download a video
+      tags:
+        - Videos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the video
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [original, rendered, trimmed, subtitled, combined]
+            default: original
+          required: false
+          description: Type of video to download (original, rendered, trimmed, subtitled, or combined)
+      responses:
+        '200':
+          description: Video file
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Video not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Video:
+      type: object
+      required:
+        - id
+        - title
+        - originalFilename
+        - filePath
+        - status
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the video
+        title:
+          type: string
+          description: Title of the video
+        originalFilename:
+          type: string
+          description: Original filename of the video
+        filePath:
+          type: string
+          description: Path to the original video file
+        renderedPath:
+          type: string
+          description: Path to the rendered video file
+          nullable: true
+        thumbnailPath:
+          type: string
+          description: Path to the video thumbnail
+          nullable: true
+        duration:
+          type: number
+          description: Duration of the video in seconds
+          nullable: true
+        status:
+          type: string
+          enum: [UPLOADED, PROCESSING, READY, FAILED]
+          description: Current status of the video
+        createdAt:
+          type: string
+          format: date-time
+          description: The date-time when the video was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date-time when the video was last updated
+    
+    Trim:
+      type: object
+      required:
+        - id
+        - startTime
+        - endTime
+        - videoId
+        - status
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the trim operation
+        startTime:
+          type: number
+          description: Start time in seconds
+        endTime:
+          type: number
+          description: End time in seconds
+        outputPath:
+          type: string
+          description: Path to the trimmed video file
+          nullable: true
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+          description: Current status of the trim operation
+        videoId:
+          type: string
+          description: ID of the video being trimmed
+        createdAt:
+          type: string
+          format: date-time
+          description: The date-time when the trim operation was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date-time when the trim operation was last updated
+    
+    Subtitle:
+      type: object
+      required:
+        - id
+        - text
+        - startTime
+        - endTime
+        - videoId
+        - status
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the subtitle
+        text:
+          type: string
+          description: The subtitle text
+        startTime:
+          type: number
+          description: Start time in seconds
+        endTime:
+          type: number
+          description: End time in seconds
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+          description: Current status of the subtitle
+        videoId:
+          type: string
+          description: ID of the video for this subtitle
+        createdAt:
+          type: string
+          format: date-time
+          description: The date-time when the subtitle was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date-time when the subtitle was last updated
+    
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: object
+          description: Additional error details
