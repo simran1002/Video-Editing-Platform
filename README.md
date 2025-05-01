@@ -90,23 +90,18 @@ The easiest way to get started is using Docker, which handles all dependencies i
 ### Docker Commands
 
 ```bash
-# Start all services
 docker-compose up -d
 
-# Stop all services
 docker-compose down
 
-# View application logs
 docker-compose logs -f app
 
-# Rebuild after code changes
 docker-compose up -d --build
 
-# Using npm scripts for Docker operations
-npm run start-services  # Start Docker containers
-npm run stop-services   # Stop Docker containers
-npm run logs            # View application logs
-npm run rebuild         # Rebuild and restart containers
+npm run start-services 
+npm run stop-services
+npm run logs            
+npm run rebuild         
 ```
 
 ## API Documentation
@@ -176,10 +171,10 @@ docker-compose up -d --build
 The following npm scripts are available for easier management:
 
 ```bash
-npm run start-services  # Start Docker containers
-npm run stop-services   # Stop Docker containers
-npm run logs            # View application logs
-npm run rebuild         # Rebuild and restart containers
+npm run start-services  
+npm run stop-services   
+npm run logs           
+npm run rebuild         
 ```
 
 ## API Endpoints
@@ -238,19 +233,19 @@ npm run rebuild         # Rebuild and restart containers
 
 ```bash
 ├── src/
-│   ├── controllers/     # Request handlers
-│   ├── middlewares/     # Express middlewares
-│   ├── models/          # Data models
-│   ├── routes/          # API routes
-│   ├── services/        # Business logic
-│   ├── utils/           # Utility functions
-│   ├── config/          # Configuration
-│   └── index.ts         # Application entry point
-├── uploads/             # Uploaded videos storage
-├── outputs/             # Processed videos storage
-├── Dockerfile           # Docker configuration
-├── docker-compose.yml   # Docker Compose configuration
-└── package.json         # Project dependencies
+│   ├── controllers/     
+│   ├── middlewares/  
+│   ├── models/         
+│   ├── routes/      
+│   ├── services/       
+│   ├── utils/          
+│   ├── config/         
+│   └── index.ts         
+├── uploads/            
+├── outputs/             
+├── Dockerfile          
+├── docker-compose.yml  
+└── package.json         
 ```
 
 ## License

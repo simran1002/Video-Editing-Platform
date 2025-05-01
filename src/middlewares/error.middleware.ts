@@ -1,17 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
-/**
- * Error response interface
- */
+
 export interface ErrorResponse {
   status: number;
   message: string;
   error?: any;
 }
 
-/**
- * Custom API error class
- */
+
 export class ApiError extends Error {
   status: number;
   error?: any;
@@ -24,9 +20,6 @@ export class ApiError extends Error {
   }
 }
 
-/**
- * Global error handler
- */
 export const errorHandler = (
   err: Error | ApiError,
   req: Request,

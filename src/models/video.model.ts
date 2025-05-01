@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/database';
 
-// Video status enum
 export enum VideoStatus {
   UPLOADED = 'UPLOADED',
   PROCESSING = 'PROCESSING',
@@ -9,7 +8,6 @@ export enum VideoStatus {
   FAILED = 'FAILED'
 }
 
-// Video attributes interface
 interface VideoAttributes {
   id: string;
   title: string;
@@ -23,10 +21,8 @@ interface VideoAttributes {
   updatedAt: Date;
 }
 
-// Video creation attributes interface (optional fields during creation)
 interface VideoCreationAttributes extends Optional<VideoAttributes, 'id' | 'createdAt' | 'updatedAt' | 'thumbnailPath' | 'renderedPath' | 'duration'> {}
 
-// Video model class
 export class Video extends Model<VideoAttributes, VideoCreationAttributes> implements VideoAttributes {
   public id!: string;
   public title!: string;
@@ -40,7 +36,6 @@ export class Video extends Model<VideoAttributes, VideoCreationAttributes> imple
   public readonly updatedAt!: Date;
 }
 
-// Initialize Video model
 Video.init(
   {
     id: {

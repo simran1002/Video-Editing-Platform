@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.specs = void 0;
+exports.swaggerSpec = void 0;
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const package_json_1 = require("../../package.json");
 const options = {
@@ -23,7 +23,7 @@ const options = {
         },
         servers: [
             {
-                url: '/api',
+                url: '/',
                 description: 'API Server',
             },
         ],
@@ -31,33 +31,38 @@ const options = {
             schemas: {
                 Video: {
                     type: 'object',
-                    required: ['id', 'filename', 'originalPath', 'size', 'status'],
+                    required: ['id', 'title', 'originalFilename', 'filePath', 'status'],
                     properties: {
                         id: {
                             type: 'string',
                             description: 'The auto-generated id of the video',
                         },
-                        filename: {
+                        title: {
+                            type: 'string',
+                            description: 'Title of the video',
+                        },
+                        originalFilename: {
                             type: 'string',
                             description: 'Original filename of the video',
                         },
-                        originalPath: {
+                        filePath: {
                             type: 'string',
                             description: 'Path to the original video file',
                         },
-                        outputPath: {
+                        renderedPath: {
                             type: 'string',
-                            description: 'Path to the processed video file',
+                            description: 'Path to the rendered video file',
+                            nullable: true,
+                        },
+                        thumbnailPath: {
+                            type: 'string',
+                            description: 'Path to the video thumbnail',
                             nullable: true,
                         },
                         duration: {
                             type: 'number',
                             description: 'Duration of the video in seconds',
                             nullable: true,
-                        },
-                        size: {
-                            type: 'integer',
-                            description: 'Size of the video file in bytes',
                         },
                         status: {
                             type: 'string',
@@ -204,6 +209,6 @@ const options = {
             },
         },
     },
-    apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
+    apis: ['./src/routes/*.ts'],
 };
-exports.specs = (0, swagger_jsdoc_1.default)(options);
+exports.swaggerSpec = (0, swagger_jsdoc_1.default)(options);

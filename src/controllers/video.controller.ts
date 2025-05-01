@@ -12,14 +12,10 @@ import {
 
 const outputDir = process.env.OUTPUT_DIR || 'outputs';
 
-// Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-/**
- * Upload a video file
- */
 export const uploadVideoController = async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.file) {
@@ -42,9 +38,7 @@ export const uploadVideoController = async (req: Request, res: Response): Promis
   }
 };
 
-/**
- * Get a video by ID
- */
+
 export const getVideoByIdController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -58,9 +52,6 @@ export const getVideoByIdController = async (req: Request, res: Response): Promi
   }
 };
 
-/**
- * Trim a video
- */
 export const trimVideoController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -89,9 +80,6 @@ export const trimVideoController = async (req: Request, res: Response): Promise<
   }
 };
 
-/**
- * Add subtitles to a video
- */
 export const addSubtitleController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -120,9 +108,7 @@ export const addSubtitleController = async (req: Request, res: Response): Promis
   }
 };
 
-/**
- * Render a video with edits
- */
+
 export const renderVideoController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -133,7 +119,6 @@ export const renderVideoController = async (req: Request, res: Response): Promis
       return;
     }
 
-    // Validate edits
     for (const edit of edits) {
       if (!edit.type || !edit.id) {
         res.status(400).json({ error: 'Each edit must have a type and id' });
@@ -158,9 +143,7 @@ export const renderVideoController = async (req: Request, res: Response): Promis
   }
 };
 
-/**
- * Download a video
- */
+
 export const downloadVideoController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -175,11 +158,9 @@ export const downloadVideoController = async (req: Request, res: Response): Prom
 
     const filePath = await downloadVideo(id, type as string);
     
-    // Set headers for file download
     res.setHeader('Content-Disposition', `attachment; filename=${path.basename(filePath)}`);
     res.setHeader('Content-Type', 'video/mp4');
     
-    // Stream the file
     const fileStream = fs.createReadStream(filePath);
     fileStream.pipe(res);
   } catch (error: any) {

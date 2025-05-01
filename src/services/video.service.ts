@@ -221,7 +221,6 @@ export const downloadVideo = async (videoId: string, type: string): Promise<stri
       throw new Error('Invalid download type');
     }
 
-    // Check if file exists
     if (!fs.existsSync(filePath)) {
       throw new Error('Video file not found');
     }

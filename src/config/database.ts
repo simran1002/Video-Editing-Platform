@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const sequelize = new Sequelize(
-  process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/video_editing_db',
+  process.env.DATABASE_URL || 'postgresql://postgres:nodejs@localhost:5432/Video-editing?schema=public',
   {
     dialect: 'postgres',
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
